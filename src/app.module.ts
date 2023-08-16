@@ -19,6 +19,9 @@ import { AppService } from './app.service';
           database: configService.get<string>('DATABASE_DATABASE'),
           synchronize: false,
           logging: true,
+          ssl: {
+            rejectUnauthorized: false,
+          },
         };
       },
       inject: [ConfigService],

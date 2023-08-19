@@ -3,13 +3,19 @@ version: 0.2
 
 # 빌드 단계별로 원하는 명령을 입력합니다.
 phases:
+  install:
+    runtime-versions:
+      docker: 18 # Use a valid Docker runtime version
   # 빌드 전에 수행할 명령을 입력합니다.
   pre_build:
     commands:
       - echo Buile Phase >> pre_build phase...
       - echo login to Amazon ECR
       - aws --version
-      - aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 988454212870.dkr.ecr.ap-northeast-2.amazonaws.com
+      - REPOSITORY_URI=988454212870.dkr.ecr.ap-northeast-2.amazonaws.com
+      - aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin $REPOSITORY_URI
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_TEG=${COMMIT_HASH:=latest}
   # 빌드를 수행할 명령을 입력합니다.
   build:
     commands:
@@ -25,10 +31,11 @@ phases:
       - echo DATABASE_PASSWORD=${DATABASE_PASSWORD} >> .env
       - echo DATABASE_DATABASE=${DATABASE_DATABASE} >> .env
       - cat .env
-      - docker build -t terraform-practice .
-      - docker tag terraform-practice:latest 988454212870.dkr.ecr.ap-northeast-2.amazonaws.com/terraform-practice:latest
+      - docker build -t $REPOSITORY_URI:latest .
+      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
   # 빌드 후에 수행할 명령을 입력합니다.
   post_build:
     commands:
       - echo Buile Phase >> Build completed on `date`
-      - docker push 988454212870.dkr.ecr.ap-northeast-2.amazonaws.com/terraform-practice:latest
+      - docker push $REPOSITORY_URI:latest
+      - docker push $REPOSITORY_URI:$IMAGE_TAG

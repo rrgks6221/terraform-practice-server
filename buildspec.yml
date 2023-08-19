@@ -31,11 +31,10 @@ phases:
       - echo DATABASE_PASSWORD=${DATABASE_PASSWORD} >> .env
       - echo DATABASE_DATABASE=${DATABASE_DATABASE} >> .env
       - cat .env
-      - docker build -t $REPOSITORY_URI:latest .
-      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+      - ls
+      - docker build -t terraform-practice:latest .
   # 빌드 후에 수행할 명령을 입력합니다.
   post_build:
     commands:
       - echo Buile Phase >> Build completed on `date`
-      - docker push $REPOSITORY_URI:latest
-      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - docker push terraform-practice:latest

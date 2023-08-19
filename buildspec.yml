@@ -25,6 +25,7 @@ phases:
       - echo DATABASE_USERNAME=${DATABASE_USERNAME} >> .env
       - echo DATABASE_PASSWORD=${DATABASE_PASSWORD} >> .env
       - echo DATABASE_DATABASE=${DATABASE_DATABASE} >> .env
+      - cat .env
       - npm ci
       - npm run build
       - npm run start:prod

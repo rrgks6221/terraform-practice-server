@@ -3,14 +3,13 @@ version: 0.2
 
 # 빌드 단계별로 원하는 명령을 입력합니다.
 phases:
-  # 빌드 전에 필요한 환경을 설치합니다.
-  install:
-    runtime-versions:
-      nodejs: 18.16.0
   # 빌드 전에 수행할 명령을 입력합니다.
   pre_build:
     commands:
       - echo Buile Phase >> pre_build phase...
+      - echo login to Amazon ECR
+      - aws --version
+      - aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 988454212870.dkr.ecr.ap-northeast-2.amazonaws.com
   # 빌드를 수행할 명령을 입력합니다.
   build:
     commands:
@@ -26,17 +25,10 @@ phases:
       - echo DATABASE_PASSWORD=${DATABASE_PASSWORD} >> .env
       - echo DATABASE_DATABASE=${DATABASE_DATABASE} >> .env
       - cat .env
-      - echo node -v
-      - echo npm -v
-      - npm install
-      - npm run build
+      - docker build -t terraform-practice .
+      - docker tag terraform-practice:latest 988454212870.dkr.ecr.ap-northeast-2.amazonaws.com/terraform-practice:latest
   # 빌드 후에 수행할 명령을 입력합니다.
   post_build:
     commands:
       - echo Buile Phase >> Build completed on `date`
-# 빌드 결과물로 나온 아티팩트에 대한 정보를 제공합니다.
-artifacts:
-  # 빌드 환경에서 빌드 출력 결과물이 생성되는 위치를 나타냅니다.
-  # '**/*'는 모든 파일을 재귀적으로 나타냅니다.
-  files:
-    - dist/**/*
+      - docker push 988454212870.dkr.ecr.ap-northeast-2.amazonaws.com/terraform-practice:latest

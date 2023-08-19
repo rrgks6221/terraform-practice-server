@@ -6,7 +6,7 @@ phases:
   # 빌드 전에 필요한 환경을 설치합니다.
   install:
     runtime-versions:
-      nodejs: latest
+      nodejs: 18.16.0
   # 빌드 전에 수행할 명령을 입력합니다.
   pre_build:
     commands:
@@ -26,6 +26,8 @@ phases:
       - echo DATABASE_PASSWORD=${DATABASE_PASSWORD} >> .env
       - echo DATABASE_DATABASE=${DATABASE_DATABASE} >> .env
       - cat .env
+      - echo node -v
+      - echo npm -v
       - npm install
       - npm run build
   # 빌드 후에 수행할 명령을 입력합니다.

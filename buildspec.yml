@@ -34,6 +34,7 @@ phases:
       - ls
       - docker build -t $REPOSITORY_URI:latest .
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+      - echo docker images
   # 빌드 후에 수행할 명령을 입력합니다.
   post_build:
     commands:

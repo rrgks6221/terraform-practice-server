@@ -16,7 +16,7 @@ phases:
       - PROJECT_NAME=terraform-practice
       - aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin $REPOSITORY_URI
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      - IMAGE_TEG=${COMMIT_HASH:=latest}
+      - IMAGE_TAG=${COMMIT_HASH:=latest}
   # 빌드를 수행할 명령을 입력합니다.
   build:
     commands:

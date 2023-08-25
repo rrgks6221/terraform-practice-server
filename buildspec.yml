@@ -3,15 +3,20 @@ version: 0.2
 
 env:
   variables:
-    APPLICATION:
-      PORT: ${PORT}
-      DATABASE_TYPE: ${DATABASE_TYPE}
-      DATABASE_HOST: ${DATABASE_HOST}
-      DATABASE_PORT: ${DATABASE_PORT}
-      DATABASE_SCHEMA: ${DATABASE_SCHEMA}
-      DATABASE_USERNAME: ${DATABASE_USERNAME}
-      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
-      DATABASE_DATABASE: ${DATABASE_DATABASE}
+    # application environment variables
+    PORT: ${PORT}
+    DATABASE_TYPE: ${DATABASE_TYPE}
+    DATABASE_HOST: ${DATABASE_HOST}
+    DATABASE_PORT: ${DATABASE_PORT}
+    DATABASE_SCHEMA: ${DATABASE_SCHEMA}
+    DATABASE_USERNAME: ${DATABASE_USERNAME}
+    DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+    DATABASE_DATABASE: ${DATABASE_DATABASE}
+
+    # code build environment variables
+    REPOSITORY_URI: ${REPOSITORY_URI}
+    PROJECT_NAME: ${PROJECT_NAME}
+    REGION: ${REGION}
 
 # 빌드 단계별로 원하는 명령을 입력합니다.
 phases:
@@ -21,19 +26,17 @@ phases:
   # 빌드 전에 수행할 명령을 입력합니다.
   pre_build:
     commands:
-      - echo Buile Phase >> pre_build phase...
+      - echo Build Phase >> pre_build phase...
       - echo login to Amazon ECR
       - aws --version
-      - REPOSITORY_URI=988454212870.dkr.ecr.ap-northeast-2.amazonaws.com
-      - PROJECT_NAME=terraform-practice
-      - aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin $REPOSITORY_URI
+      - aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $REPOSITORY_URI
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=${COMMIT_HASH:=latest}
   # 빌드를 수행할 명령을 입력합니다.
   build:
     commands:
-      - echo Buile Phase >> Build started on `date`
-      - cat $APPLICATION
+      - echo Build Phase >> Build started on `date`
+      # create .env
       - echo rm -rf .env
       - touch .env
       - echo PORT=${PORT} >> .env
@@ -45,7 +48,7 @@ phases:
       - echo DATABASE_PASSWORD=${DATABASE_PASSWORD} >> .env
       - echo DATABASE_DATABASE=${DATABASE_DATABASE} >> .env
       - cat .env
-      - ls
+
       - docker build -t $REPOSITORY_URI/$PROJECT_NAME:latest .
       - docker tag $REPOSITORY_URI/$PROJECT_NAME:latest $REPOSITORY_URI/$PROJECT_NAME:$IMAGE_TAG
       - echo docker images
@@ -56,5 +59,6 @@ phases:
       - docker push $REPOSITORY_URI/$PROJECT_NAME:$IMAGE_TAG
       - echo Writing image definitions file...
       - printf '{"ImageURI":"%s"}' $REPOSITORY_URI/PROJECT_NAME:$IMAGE_TAG > imageDetail.json
-  artifacts:
-    files: imageDetail.json
+# artifacts 저장
+artifacts:
+  files: imageDetail.json

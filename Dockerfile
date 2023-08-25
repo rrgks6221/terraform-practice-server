@@ -1,4 +1,4 @@
-FROM node:16.17.0 AS builder
+FROM node:18.16.0 AS builder
 WORKDIR /app
 
 COPY . .
@@ -6,7 +6,7 @@ COPY . .
 RUN npm install
 RUN npm run build
 
-FROM node:16.17.0-alpine
+FROM node:18.16.0-alpine
 WORKDIR /app
 
 COPY --from=builder /app ./

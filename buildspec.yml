@@ -1,6 +1,18 @@
 # 버전은 현재, 0.2가 권장사항입니다.
 version: 0.2
 
+env:
+  variables:
+    APPLICATION:
+      PORT: ${PORT}
+      DATABASE_TYPE: ${DATABASE_TYPE}
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_PORT: ${DATABASE_PORT}
+      DATABASE_SCHEMA: ${DATABASE_SCHEMA}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_DATABASE: ${DATABASE_DATABASE}
+
 # 빌드 단계별로 원하는 명령을 입력합니다.
 phases:
   install:
@@ -21,6 +33,7 @@ phases:
   build:
     commands:
       - echo Buile Phase >> Build started on `date`
+      - cat $APPLICATION
       - echo rm -rf .env
       - touch .env
       - echo PORT=${PORT} >> .env

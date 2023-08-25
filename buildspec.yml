@@ -3,20 +3,20 @@ version: 0.2
 
 env:
   variables:
-    # application environment variables
-    PORT: '${PORT}'
-    DATABASE_TYPE: '${DATABASE_TYPE}'
-    DATABASE_HOST: '${DATABASE_HOST}'
-    DATABASE_PORT: '${DATABASE_PORT}'
-    DATABASE_SCHEMA: '${DATABASE_SCHEMA}'
-    DATABASE_USERNAME: '${DATABASE_USERNAME}'
-    DATABASE_PASSWORD: '${DATABASE_PASSWORD}'
-    DATABASE_DATABASE: '${DATABASE_DATABASE}'
+    # application environment variables defined
+    PORT: ''
+    DATABASE_TYPE: ''
+    DATABASE_HOST: ''
+    DATABASE_PORT: ''
+    DATABASE_SCHEMA: ''
+    DATABASE_USERNAME: ''
+    DATABASE_PASSWORD: ''
+    DATABASE_DATABASE: ''
 
-    # code build environment variables
-    REPOSITORY_URI: '${REPOSITORY_URI}'
-    PROJECT_NAME: '${PROJECT_NAME}'
-    REGION: '${REGION}'
+    # code build environment variables defined
+    REPOSITORY_URI: ''
+    PROJECT_NAME: ''
+    REGION: ''
 
 # 빌드 단계별로 원하는 명령을 입력합니다.
 phases:
@@ -26,10 +26,26 @@ phases:
   # 빌드 전에 수행할 명령을 입력합니다.
   pre_build:
     commands:
-      - echo Build Phase >> pre_build phase...
+      # application environment variables inject
+      - PORT: '${PORT}'
+      - DATABASE_TYPE: '${DATABASE_TYPE}'
+      - DATABASE_HOST: '${DATABASE_HOST}'
+      - DATABASE_PORT: '${DATABASE_PORT}'
+      - DATABASE_SCHEMA: '${DATABASE_SCHEMA}'
+      - DATABASE_USERNAME: '${DATABASE_USERNAME}'
+      - DATABASE_PASSWORD: '${DATABASE_PASSWORD}'
+      - DATABASE_DATABASE: '${DATABASE_DATABASE}'
+      # code build environment variables inject
+      - REPOSITORY_URI: '${REPOSITORY_URI}'
+      - PROJECT_NAME: '${PROJECT_NAME}'
+      - REGION: '${REGION}'
+
+      # ecr login
       - echo login to Amazon ECR
       - aws --version
       - aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $REPOSITORY_URI
+
+      # tagging
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=${COMMIT_HASH:=latest}
   # 빌드를 수행할 명령을 입력합니다.
@@ -49,15 +65,18 @@ phases:
       - echo DATABASE_DATABASE=${DATABASE_DATABASE} >> .env
       - cat .env
 
+      # image build
       - docker build -t $REPOSITORY_URI/$PROJECT_NAME:latest .
       - docker tag $REPOSITORY_URI/$PROJECT_NAME:latest $REPOSITORY_URI/$PROJECT_NAME:$IMAGE_TAG
       - echo docker images
   # 빌드 후에 수행할 명령을 입력합니다.
   post_build:
     commands:
+      # image push at ecr
       - docker push $REPOSITORY_URI/$PROJECT_NAME:latest
       - docker push $REPOSITORY_URI/$PROJECT_NAME:$IMAGE_TAG
-      - echo Writing image definitions file...
+
+      # Writing image definitions file...
       - printf '{"ImageURI":"%s"}' $REPOSITORY_URI/PROJECT_NAME:$IMAGE_TAG > imageDetail.json
 # artifacts 저장
 artifacts:

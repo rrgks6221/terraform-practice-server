@@ -1,4 +1,4 @@
-FROM node:18.16.0 AS builder
+FROM node:18.16.0-apline AS builder
 WORKDIR /app
 
 COPY . .

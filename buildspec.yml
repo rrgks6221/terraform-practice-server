@@ -23,12 +23,6 @@ phases:
       - PROJECT_NAME=$PROJECT_NAME
       - REGION=$REGION
 
-      - echo debug env
-      - echo $REGION
-      - echo ${REGION}
-      - echo $REPOSITORY_URI
-      - echo ${REPOSITORY_URI}
-
       # ecr login
       - echo login to Amazon ECR
       - aws --version
@@ -44,14 +38,14 @@ phases:
       # create .env
       - echo rm -rf .env
       - touch .env
-      - echo PORT=${PORT} >> .env
-      - echo DATABASE_TYPE=${DATABASE_TYPE} >> .env
-      - echo DATABASE_HOST=${DATABASE_HOST} >> .env
-      - echo DATABASE_PORT=${DATABASE_PORT} >> .env
-      - echo DATABASE_SCHEMA=${DATABASE_SCHEMA} >> .env
-      - echo DATABASE_USERNAME=${DATABASE_USERNAME} >> .env
-      - echo DATABASE_PASSWORD=${DATABASE_PASSWORD} >> .env
-      - echo DATABASE_DATABASE=${DATABASE_DATABASE} >> .env
+      - echo PORT=$PORT >> .env
+      - echo DATABASE_TYPE=$DATABASE_TYPE >> .env
+      - echo DATABASE_HOST=$DATABASE_HOST >> .env
+      - echo DATABASE_PORT=$DATABASE_PORT >> .env
+      - echo DATABASE_SCHEMA=$DATABASE_SCHEMA >> .env
+      - echo DATABASE_USERNAME=$DATABASE_USERNAME >> .env
+      - echo DATABASE_PASSWORD=$DATABASE_PASSWORD >> .env
+      - echo DATABASE_DATABASE=$DATABASE_DATABASE >> .env
       - cat .env
 
       # image build

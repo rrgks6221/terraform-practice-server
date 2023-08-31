@@ -1,23 +1,6 @@
 # 버전은 현재, 0.2가 권장사항입니다.
 version: 0.2
 
-env:
-  variables:
-    # application environment variables defined
-    PORT: ''
-    DATABASE_TYPE: ''
-    DATABASE_HOST: ''
-    DATABASE_PORT: ''
-    DATABASE_SCHEMA: ''
-    DATABASE_USERNAME: ''
-    DATABASE_PASSWORD: ''
-    DATABASE_DATABASE: ''
-
-    # code build environment variables defined
-    REPOSITORY_URI: ''
-    PROJECT_NAME: ''
-    REGION: ''
-
 # 빌드 단계별로 원하는 명령을 입력합니다.
 phases:
   install:
@@ -42,10 +25,6 @@ phases:
 
       # ecr login
       - echo login to Amazon ECR
-      - echo $REGION
-      - echo ${REGION}
-      - echo $REPOSITORY_URI
-      - echo ${REPOSITORY_URI}
       - aws --version
       - aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $REPOSITORY_URI
 

@@ -23,11 +23,13 @@ phases:
       - REPOSITORY_URI=$REPOSITORY_URI
       - PROJECT_NAME=$PROJECT_NAME
       - REGION=$REGION
+      - DOCKER_ID=$DOCKER_ID
+      - DOCKER_PASSWORD=$DOCKER_PASSWORD
 
       # ecr login
       - echo login to Amazon ECR
       - aws --version
-      - aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $REPOSITORY_URI
+      - aws ecr get-login-password --region $REGION | docker login --username DOCKER_ID --password-stdin $DOCKER_PASSWORD
 
       # tagging
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)

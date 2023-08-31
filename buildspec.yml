@@ -23,6 +23,11 @@ phases:
       - PROJECT_NAME=${PROJECT_NAME}
       - REGION=${REGION}
 
+      - echo $REGION
+      - echo ${REGION}
+      - echo $REPOSITORY_URI
+      - echo $REPOSITORY_URI
+
       # ecr login
       - echo login to Amazon ECR
       - aws --version

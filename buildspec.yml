@@ -49,6 +49,10 @@ phases:
       - echo DATABASE_DATABASE=$DATABASE_DATABASE >> .env
       - cat .env
 
+      - echo $REPOSITORY_URI
+      - echo $PROJECT_NAME
+      - echo $REGION
+
       # image build
       - docker build -t $REPOSITORY_URI/$PROJECT_NAME:latest .
       - docker tag $REPOSITORY_URI/$PROJECT_NAME:latest $REPOSITORY_URI/$PROJECT_NAME:$IMAGE_TAG

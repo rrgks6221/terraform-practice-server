@@ -27,18 +27,18 @@ phases:
   pre_build:
     commands:
       # application environment variables inject
-      - PORT: '${PORT}'
-      - DATABASE_TYPE: '${DATABASE_TYPE}'
-      - DATABASE_HOST: '${DATABASE_HOST}'
-      - DATABASE_PORT: '${DATABASE_PORT}'
-      - DATABASE_SCHEMA: '${DATABASE_SCHEMA}'
-      - DATABASE_USERNAME: '${DATABASE_USERNAME}'
-      - DATABASE_PASSWORD: '${DATABASE_PASSWORD}'
-      - DATABASE_DATABASE: '${DATABASE_DATABASE}'
+      - PORT: ${PORT}
+      - DATABASE_TYPE: ${DATABASE_TYPE}
+      - DATABASE_HOST: ${DATABASE_HOST}
+      - DATABASE_PORT: ${DATABASE_PORT}
+      - DATABASE_SCHEMA: ${DATABASE_SCHEMA}
+      - DATABASE_USERNAME: ${DATABASE_USERNAME}
+      - DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      - DATABASE_DATABASE: ${DATABASE_DATABASE}
       # code build environment variables inject
-      - REPOSITORY_URI: '${REPOSITORY_URI}'
-      - PROJECT_NAME: '${PROJECT_NAME}'
-      - REGION: '${REGION}'
+      - REPOSITORY_URI: ${REPOSITORY_URI}
+      - PROJECT_NAME: ${PROJECT_NAME}
+      - REGION: ${REGION}
 
       # ecr login
       - echo login to Amazon ECR
